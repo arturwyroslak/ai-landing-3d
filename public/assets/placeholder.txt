@@ -1,1 +1,1 @@
-Placeholder assets directory. Add optimized images and attribution here.
+placeholder asset - add images, models, or glb files here
