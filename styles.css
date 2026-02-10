@@ -1,28 +1,50 @@
+/* Root variables and base resets - keep consistent with project style */
 :root{
-  --bg:#0b0f1a;
-  --panel:#0f1724;
+  --bg:#071028;
+  --panel:#0c111b;
   --accent:#7c5cff;
   --text:#e6eef8;
   --muted:#9aa7bf;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
-body{background:linear-gradient(180deg,var(--bg),#071023);color:var(--text);}
+body{background:radial-gradient(1200px 800px at 10% 10%, rgba(124,92,255,0.06), transparent 10%), linear-gradient(180deg,var(--bg),#031022);color:var(--text);}
 .container{max-width:1100px;margin:0 auto;padding:1rem}
 .site-header{padding:.75rem 0}
 .brand{margin:0;font-size:1.25rem}
 .nav a{color:var(--muted);margin-left:1rem;text-decoration:none}
 .hero{display:flex;gap:1rem;align-items:center;padding:2rem 0}
 .hero-content{flex:1}
-.hero-scene{flex:1;min-height:320px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg, rgba(124,92,255,0.06), rgba(0,0,0,0.15));}
-.cta{display:inline-block;margin-top:1rem;padding:.75rem 1.25rem;background:var(--accent);color:#fff;border-radius:8px;text-decoration:none}
+
+/* Hero scene container - keep transparent background for Three.js canvas */
+.hero-scene{
+  flex:1;
+  min-height:360px;
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  background:linear-gradient(135deg, rgba(124,92,255,0.04), rgba(3,6,12,0.12));
+  box-shadow: 0 6px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  backdrop-filter: blur(4px);
+}
+
+/* Subtle overlay to give depth when canvas is transparent */
+.hero-scene::after{
+  content:'';
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 30%, rgba(124,92,255,0.06), transparent 18%), radial-gradient(circle at 80% 70%, rgba(0,0,0,0.08), transparent 20%);
+  pointer-events:none;
+}
+
+.cta{display:inline-block;margin-top:1rem;padding:.75rem 1.25rem;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-weight:600}
 .features ul{display:flex;gap:1rem;list-style:none;padding:0}
 .contact{padding:2rem 0}
 .site-footer{padding:2rem 0;color:var(--muted)}
 
-@media (max-width:800px){
+@media (max-width:900px){
   .hero{flex-direction:column}
   .nav{display:none}
+  .hero-scene{min-height:300px}
 }
 
 @media (prefers-reduced-motion:reduce){
