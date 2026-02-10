@@ -6,7 +6,14 @@ export default function initScene({mount}){
   const width = mount.clientWidth || 800;
   const height = mount.clientHeight || 600;
 
-  const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  let renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  }catch(err){
+    console.error('Failed to create WebGLRenderer',err);
+    throw err;
+  }
+
   renderer.setSize(width,height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   mount.appendChild(renderer.domElement);
@@ -34,26 +41,64 @@ export default function initScene({mount}){
   function onResize(){
     const w = mount.clientWidth || 800;
     const h = mount.clientHeight || 600;
-    renderer.setSize(w,h);
-    camera.aspect = w/h;
-    camera.updateProjectionMatrix();
+    if(renderer && camera){
+      renderer.setSize(w,h);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
   }
 
   window.addEventListener('resize', onResize);
 
   // Simple animation loop
+  let active = true;
   let last = performance.now();
   function animate(t){
+    if(!active) return;
     const dt = (t - last) / 1000;
     last = t;
 
-    mesh.rotation.y += dt * 0.3;
-    mesh.rotation.x += dt * 0.08;
+    try{
+      mesh.rotation.y += dt * 0.3;
+      mesh.rotation.x += dt * 0.08;
+      renderer.render(scene,camera);
+    }catch(err){
+      console.error('Render loop error',err);
+      // stop the loop on fatal errors
+      active = false;
+      return;
+    }
 
-    renderer.render(scene,camera);
     requestAnimationFrame(animate);
   }
   requestAnimationFrame(animate);
 
-  return {scene,camera,renderer,mesh};
+  function dispose(){
+    // stop animation
+    active = false;
+    try{
+      window.removeEventListener('resize', onResize);
+    }catch(e){/* ignore */}
+
+    // dispose geometry and materials
+    try{
+      mesh.geometry && mesh.geometry.dispose && mesh.geometry.dispose();
+      mesh.material && mesh.material.dispose && mesh.material.dispose();
+    }catch(e){/* ignore */}
+
+    // remove from scene
+    try{ scene.remove(mesh); }catch(e){}
+
+    // dispose renderer
+    try{
+      if(renderer){
+        renderer.dispose();
+        if(renderer.domElement && renderer.domElement.parentNode === mount){
+          mount.removeChild(renderer.domElement);
+        }
+      }
+    }catch(e){/* ignore */}
+  }
+
+  return {scene,camera,renderer,mesh,dispose};
 }
