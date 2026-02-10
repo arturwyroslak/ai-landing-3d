@@ -1,2 +1,9 @@
-# ai-landing-3d
-Advanced AI landing page with interactive 3D animations (Three.js). Polish-language UI and documentation.
+# AI 3D Landing
+
+Scaffold for an AI-themed landing page with 3D animated scene using Three.js and Vite.
+
+Run locally:
+
+1. npm install
+2. npm run dev
+
