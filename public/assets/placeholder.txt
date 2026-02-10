@@ -1,0 +1,1 @@
+Placeholder assets directory. Add optimized images and attribution here.
